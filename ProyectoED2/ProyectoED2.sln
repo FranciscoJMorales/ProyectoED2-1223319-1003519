@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProyectoED2", "ProyectoED2\ProyectoED2.csproj", "{FAC9358F-084A-4200-ACCE-34A810E55B9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "api", "api\api.csproj", "{C4B4B4F0-DDDD-4A59-BF1B-30D9308CDC99}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Processors", "Processors\Processors.csproj", "{549319DB-3114-448B-BD8B-42937AB266AC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FAC9358F-084A-4200-ACCE-34A810E55B9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAC9358F-084A-4200-ACCE-34A810E55B9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAC9358F-084A-4200-ACCE-34A810E55B9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAC9358F-084A-4200-ACCE-34A810E55B9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4B4B4F0-DDDD-4A59-BF1B-30D9308CDC99}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4B4B4F0-DDDD-4A59-BF1B-30D9308CDC99}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4B4B4F0-DDDD-4A59-BF1B-30D9308CDC99}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4B4B4F0-DDDD-4A59-BF1B-30D9308CDC99}.Release|Any CPU.Build.0 = Release|Any CPU
+		{549319DB-3114-448B-BD8B-42937AB266AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{549319DB-3114-448B-BD8B-42937AB266AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{549319DB-3114-448B-BD8B-42937AB266AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{549319DB-3114-448B-BD8B-42937AB266AC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8C6CDD0A-E16D-42BA-89B9-74181876F07C}
+	EndGlobalSection
+EndGlobal
