@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +12,16 @@ namespace ProyectoED2.Controllers
 {
     public class ChatController : Controller
     {
+        private static readonly HttpClient client;
+
+        static ChatController()
+        {
+            client = new HttpClient
+            {
+                BaseAddress = new Uri("http://localhost:57389/")
+            };
+        }
+
         // GET: ChatController
         public ActionResult Index()
         {
@@ -16,8 +29,9 @@ namespace ProyectoED2.Controllers
         }
 
         [HttpPost]
-        public ActionResult Index(FormCollection collection)
+        public ActionResult Index(IFormCollection collection)
         {
+            var response = client.PostAsync("", new StringContent(""));
             return View();
         }
 
@@ -27,7 +41,7 @@ namespace ProyectoED2.Controllers
         }
 
         [HttpPost]
-        public ActionResult SignIn(FormCollection collection)
+        public ActionResult SignIn(IFormCollection collection)
         {
             return View();
         }

@@ -21,33 +21,19 @@ namespace Processors
             List<char> kalphabetMayus = Alphabet(key.ToUpper(), true);
             List<char> kalphabetMinus = Alphabet(key.ToLower(), false);
             string final = "";
-
-
-
             foreach (var item in text)
             {
-
                 if (alphabetMayus.Contains(item))
-                {
                     final += kalphabetMayus[alphabetMayus.IndexOf(item)];
-                }
                 else if (alphabetMinus.Contains(item))
-                {
                     final += kalphabetMinus[alphabetMinus.IndexOf(item)];
-
-                }
                 else
-                {
                     final += item;
-                }
-
             }
-
             alphabetMayus.Clear();
             alphabetMinus.Clear();
             kalphabetMayus.Clear();
             kalphabetMinus.Clear();
-
             return final;
         }
 
@@ -73,33 +59,19 @@ namespace Processors
             List<char> kalphabetMayus = Alphabet(key.ToUpper(), true);
             List<char> kalphabetMinus = Alphabet(key.ToLower(), false);
             string final = "";
-
-
-
             foreach (var item in text)
             {
-
                 if (kalphabetMayus.Contains(item))
-                {
                     final += alphabetMayus[kalphabetMayus.IndexOf(item)];
-                }
                 else if (kalphabetMinus.Contains(item))
-                {
                     final += alphabetMinus[kalphabetMinus.IndexOf(item)];
-
-                }
                 else
-                {
                     final += item;
-                }
-
             }
-
             alphabetMayus.Clear();
             alphabetMinus.Clear();
             kalphabetMayus.Clear();
             kalphabetMinus.Clear();
-
             return final;
         }
 
@@ -116,6 +88,16 @@ namespace Processors
             }
             else
                 return "";
+        }
+
+        public string CipherPassword(string password)
+        {
+            return ShowCipher(password, "PQZUDIWMATCYKLEROSFJV");
+        }
+
+        public string DechipherPassword(string password)
+        {
+            return ShowDecipher(password, "PQZUDIWMATCYKLEROSFJV");
         }
 
         private string ConvertToString(byte[] array)
