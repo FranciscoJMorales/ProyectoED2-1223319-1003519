@@ -40,10 +40,6 @@ namespace api.Controllers
         [HttpPost]
         public IActionResult Example()
         {
-            var client = new MongoClient("mongodb+srv://FranciscoJMorales:ProyectoED2@projectediicluster.uuw4c.mongodb.net/ChatDB?retryWrites=true&w=majority");
-            var database = client.GetDatabase("ChatDB");
-            var collection = database.GetCollection<BsonDocument>("Messages");
-            collection.Find(new BsonDocument()).ToList();
             return NoContent();
         }
     }
