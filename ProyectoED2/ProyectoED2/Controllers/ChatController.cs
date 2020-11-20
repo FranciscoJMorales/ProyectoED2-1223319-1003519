@@ -18,6 +18,7 @@ namespace ProyectoED2.Controllers
     {
         private static readonly HttpClient client;
         private static User currentUser;
+        private static User currentChat;
 
         static ChatController()
         {
@@ -31,6 +32,7 @@ namespace ProyectoED2.Controllers
         public ActionResult Index()
         {
             currentUser = null;
+            currentChat = null;
             return View();
         }
 
@@ -38,12 +40,12 @@ namespace ProyectoED2.Controllers
         public ActionResult Index(IFormCollection collection)
         {
             User user = new User(collection["name"], collection["password"]);
-            var json = new JsonResult(new User(collection[""], collection[""]));
+            var json = new JsonResult(user);
             var response = client.PostAsync("login", new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
             if (response.Result.IsSuccessStatusCode)
             {
                 currentUser = user;
-                return RedirectToAction("Users", user);
+                return RedirectToAction("Users");
             }
             else
                 return View();
@@ -51,6 +53,7 @@ namespace ProyectoED2.Controllers
 
         public ActionResult SignIn()
         {
+            ViewBag.IncorrectPassword = "";
             return View();
         }
 
@@ -60,45 +63,80 @@ namespace ProyectoED2.Controllers
             if (collection["password"] == collection["password2"])
             {
                 User user = new User(collection["name"], collection["password"]);
-                var json = new JsonResult(new User(collection["name"], collection["password"]));
+                var json = new JsonResult(user);
                 var response = client.PostAsync("signin", new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
                 if (response.Result.IsSuccessStatusCode)
                 {
                     currentUser = user;
-                    return RedirectToAction("Users", user);
+                    return RedirectToAction("Users");
                 }
                 else
                     return View();
             }
             else
             {
-                ViewBag.IncorrectPassword = true;
+                ViewBag.IncorrectPassword = "Las contraseñas no coinciden";
                 return View();
             }
         }
 
         public ActionResult Users()
         {
+            currentChat = null;
             var response = client.GetAsync("users");
-            var content = response.Result.Content.ReadAsStringAsync();
-            var list = JsonSerializer.Deserialize<List<Message>>(content.Result, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            var text = response.Result.Content.ReadAsStringAsync();
+            var lzw = new LZWCompressor();
+            string content = lzw.ShowDecompress(text.Result);
+            var list = JsonSerializer.Deserialize<List<UserView>>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            list.Remove(new UserView(currentUser));
             return View(list);
         }
 
-        public ActionResult Chat(string receptor)
+        public ActionResult Chat()
+        {
+            var response = client.GetAsync($"chat/{currentUser.ID}/{currentChat.ID}");
+            if (response.Result.IsSuccessStatusCode)
+            {
+                var text = response.Result.Content.ReadAsStringAsync();
+                var lzw = new LZWCompressor();
+                string content = lzw.ShowDecompress(text.Result);
+                var list = JsonSerializer.Deserialize<List<MessageView>>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                return View(list);
+            }
+            else
+                return RedirectToAction("Users");
+        }
+
+        [HttpPost]
+        public ActionResult Chat(IFormCollection collection)
+        {
+            var message = new Message(currentUser, currentChat, collection["message"]);
+            return View();
+        }
+
+        public ActionResult Search()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult Chat(IFormCollection collection)
+        public ActionResult Search(IFormCollection collection)
         {
             return View();
         }
 
         public ActionResult OpenChat(string id)
         {
-            return RedirectToAction("Chat");
+            var response = client.GetAsync($"user/{id}");
+            if (response.Result.IsSuccessStatusCode)
+            {
+                var content = response.Result.Content.ReadAsStringAsync();
+                var user = JsonSerializer.Deserialize<User>(content.Result, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                currentChat = user;
+                return RedirectToAction("Chat");
+            }
+            else
+                return RedirectToAction("Users");
         }
 
         // GET: ChatController/Details/5

@@ -11,6 +11,12 @@ namespace Processors
     {
         private readonly string Path;
 
+
+        public LZWCompressor()
+        {
+            Path = null;
+        }
+
         public LZWCompressor(string path)
         {
             Path = path;

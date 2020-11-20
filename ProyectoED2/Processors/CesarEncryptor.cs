@@ -9,6 +9,11 @@ namespace Processors
     {
         private readonly string Path;
 
+        public CesarEncryptor()
+        {
+            Path = null;
+        }
+
         public CesarEncryptor(string path)
         {
             Path = path;

@@ -19,7 +19,7 @@ namespace Models
         {
             ID = Guid.NewGuid().ToString();
             Name = name;
-            var cesar = new CesarEncryptor("");
+            var cesar = new CesarEncryptor();
             Password = cesar.CipherPassword(password);
             Random rng = new Random();
             Key = rng.Next(0, 1021);

@@ -16,15 +16,18 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.ActionLink("Chatear", "OpenChat", new { id = item.ID })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.ActionLink("Chatear", "OpenChat", new { id = item.ID })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<hr />
+@Html.ActionLink("Cerrar sesion", "Index", "Chat")

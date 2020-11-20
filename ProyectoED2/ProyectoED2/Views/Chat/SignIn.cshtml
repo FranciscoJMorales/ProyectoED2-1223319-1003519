@@ -20,5 +20,7 @@
     <input type="password" class="form-control" name="password2" placeholder="Contraseña" />
     <button type="submit">Registrate</button>
 }
+<p style="color:red">@ViewBag.IncorrectPassword</p>
+<hr />
 <p>¿Ya tienes una cuenta?</p>
 @Html.ActionLink("Inicia sesion", "Index", "Chat")

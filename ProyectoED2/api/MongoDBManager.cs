@@ -58,14 +58,24 @@ namespace api
             return list;
         }
 
-        public static List<Message> Chat(string user1, string user2)
+        public static List<Message> Chat(string id1, string id2)
         {
             var list = Messages();
             var chat = new List<Message>();
             foreach (var item in list)
             {
-                if (item.IsFromChat(user1, user2))
+                if (item.IsFromChat(id1, id2))
                     chat.Add(item);
+            }
+            return chat;
+        }
+
+        public static List<MessageView> ChatView(string id1, string id2)
+        {
+            var list = Chat(id1, id2);
+            var chat = new List<MessageView>();
+            foreach (var item in list) {
+                chat.Add(new MessageView(item, id1));
             }
             return chat;
         }

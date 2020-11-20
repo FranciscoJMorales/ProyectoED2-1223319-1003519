@@ -10,13 +10,13 @@ namespace Models
         public string Fecha { get; set; }
         public string Mensaje { get; set; }
 
-        public MessageView(Message m, string user)
+        public MessageView(Message m, string id)
         {
-            if (user == m.Sender)
+            if (id == m.SenderID)
                 Usuario = "Tu";
             else
                 Usuario = m.Sender;
-            Fecha = m.Time.ToString("dd/MM/yyyy HH:mm");
+            Fecha = m.Time;
             Mensaje = m.Content;
         }
     }

@@ -8,7 +8,9 @@ namespace Models
     {
         public string Sender { get; set; }
         public string Receiver { get; set; }
-        public DateTime Time { get; set; }
+        public string SenderID { get; set; }
+        public string ReceiverID { get; set; }
+        public string Time { get; set; }
         public string Content { get; set; }
 
         public Message()
@@ -16,20 +18,22 @@ namespace Models
 
         }
 
-        public Message(string user1, string user2, string m)
+        public Message(User sender, User receiver, string m)
         {
-            Sender = user1;
-            Receiver = user2;
+            Sender = sender.Name;
+            SenderID = sender.ID;
+            Receiver = receiver.ID;
+            ReceiverID = receiver.ID;
             Content = m;
-            Time = DateTime.Now;
+            Time = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
         }
 
-        public bool IsFromChat(string user1, string user2)
+        public bool IsFromChat(string id1, string id2)
         {
-            if (Sender == user1 && Receiver == user2)
+            if (SenderID == id1 && ReceiverID == id2)
                 return true;
             else
-                return Sender == user2 && Receiver == user1;
+                return SenderID == id2 && ReceiverID == id1;
         }
     }
 }
