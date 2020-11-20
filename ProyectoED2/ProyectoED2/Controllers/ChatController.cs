@@ -40,8 +40,7 @@ namespace ProyectoED2.Controllers
         public ActionResult Index(IFormCollection collection)
         {
             User user = new User(collection["name"], collection["password"]);
-            var json = new JsonResult(user);
-            var response = client.PostAsync("login", new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+            var response = client.PostAsync("login", new StringContent(JsonSerializer.Serialize<User>(user), Encoding.UTF8, "application/json"));
             if (response.Result.IsSuccessStatusCode)
             {
                 currentUser = user;
@@ -63,15 +62,17 @@ namespace ProyectoED2.Controllers
             if (collection["password"] == collection["password2"])
             {
                 User user = new User(collection["name"], collection["password"]);
-                var json = new JsonResult(user);
-                var response = client.PostAsync("signin", new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+                var response = client.PostAsync("signin", new StringContent(JsonSerializer.Serialize<User>(user), Encoding.UTF8, "application/json"));
                 if (response.Result.IsSuccessStatusCode)
                 {
                     currentUser = user;
                     return RedirectToAction("Users");
                 }
                 else
+                {
+                    ViewBag.IncorrectPassword = "El usuario no es valido. Cambiar el nombre o la contraseña";
                     return View();
+                }
             }
             else
             {
@@ -111,18 +112,33 @@ namespace ProyectoED2.Controllers
         public ActionResult Chat(IFormCollection collection)
         {
             var message = new Message(currentUser, currentChat, collection["message"]);
-            return View();
+            client.PostAsync("message", new StringContent(JsonSerializer.Serialize<Message>(message), Encoding.UTF8, "application/json"));
+            return RedirectToAction("Chat");
         }
 
         public ActionResult Search()
         {
-            return View();
+            ViewBag.Word = "";
+            ViewBag.Results = 0;
+            return View(new List<MessageView>());
         }
 
         [HttpPost]
         public ActionResult Search(IFormCollection collection)
         {
-            return View();
+            var response = client.GetAsync($"search/{currentUser.ID}/{currentChat.ID}/{collection["text"]}");
+            if (response.Result.IsSuccessStatusCode)
+            {
+                var text = response.Result.Content.ReadAsStringAsync();
+                var lzw = new LZWCompressor();
+                string content = lzw.ShowDecompress(text.Result);
+                var list = JsonSerializer.Deserialize<List<MessageView>>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                ViewBag.Word = collection["text"];
+                ViewBag.Results = list.Count;
+                return View(list);
+            }
+            else
+                return RedirectToAction("Chat");
         }
 
         public ActionResult OpenChat(string id)
@@ -137,75 +153,6 @@ namespace ProyectoED2.Controllers
             }
             else
                 return RedirectToAction("Users");
-        }
-
-        // GET: ChatController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: ChatController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ChatController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ChatController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: ChatController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: ChatController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: ChatController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }

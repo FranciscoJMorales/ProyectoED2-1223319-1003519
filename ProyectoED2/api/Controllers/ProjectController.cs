@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -15,32 +16,53 @@ namespace api.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
-        readonly IWebHostEnvironment env;
-
-        public ProjectController(IWebHostEnvironment _env)
+        [HttpPost]
+        [Route("/login")]
+        public IActionResult LogIn(User user)
         {
-            env = _env;
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("/signin")]
+        public IActionResult SignIn(User user)
+        {
+            return Ok();
         }
 
         [HttpGet]
-        public IActionResult Default()
+        [Route("/users")]
+        public IActionResult Users()
         {
+            return Ok();
+        }
 
-            string path = env.EnvironmentName;
-            return NoContent();
+        [HttpGet]
+        [Route("/chat/{IdEmisor}/{IdReceptor}")]
+        public IActionResult Chat(string IdEmisor, string IdReceptor)
+        {
+            return Ok();
         }
 
         [HttpPost]
-        [Route("signin")]
-        public IActionResult SignIn()
+        [Route("/message")]
+        public IActionResult Message(Message message)
         {
-            return NoContent();
+            return Ok();
         }
 
-        [HttpPost]
-        public IActionResult Example()
+        [HttpGet]
+        [Route("/search/{IdEmisor}/{IdReceptor}/{text}")]
+        public IActionResult Search(string IdEmisor, string IdReceptor, string text)
         {
-            return NoContent();
+            return Ok();
+        }
+
+        [HttpGet]
+        [Route("/user/{id}")]
+        public IActionResult GetUser(string id)
+        {
+            return Ok();
         }
     }
 }
