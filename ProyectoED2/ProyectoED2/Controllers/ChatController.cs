@@ -7,12 +7,17 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Models;
+using System.Text;
+using System.Text.Json;
+using Processors;
 
 namespace ProyectoED2.Controllers
 {
     public class ChatController : Controller
     {
         private static readonly HttpClient client;
+        private static User currentUser;
 
         static ChatController()
         {
@@ -25,14 +30,23 @@ namespace ProyectoED2.Controllers
         // GET: ChatController
         public ActionResult Index()
         {
+            currentUser = null;
             return View();
         }
 
         [HttpPost]
         public ActionResult Index(IFormCollection collection)
         {
-            var response = client.PostAsync("", new StringContent(""));
-            return View();
+            User user = new User(collection["name"], collection["password"]);
+            var json = new JsonResult(new User(collection[""], collection[""]));
+            var response = client.PostAsync("login", new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+            if (response.Result.IsSuccessStatusCode)
+            {
+                currentUser = user;
+                return RedirectToAction("Users", user);
+            }
+            else
+                return View();
         }
 
         public ActionResult SignIn()
@@ -43,7 +57,48 @@ namespace ProyectoED2.Controllers
         [HttpPost]
         public ActionResult SignIn(IFormCollection collection)
         {
+            if (collection["password"] == collection["password2"])
+            {
+                User user = new User(collection["name"], collection["password"]);
+                var json = new JsonResult(new User(collection["name"], collection["password"]));
+                var response = client.PostAsync("signin", new StringContent(json.ToString(), Encoding.UTF8, "application/json"));
+                if (response.Result.IsSuccessStatusCode)
+                {
+                    currentUser = user;
+                    return RedirectToAction("Users", user);
+                }
+                else
+                    return View();
+            }
+            else
+            {
+                ViewBag.IncorrectPassword = true;
+                return View();
+            }
+        }
+
+        public ActionResult Users()
+        {
+            var response = client.GetAsync("users");
+            var content = response.Result.Content.ReadAsStringAsync();
+            var list = JsonSerializer.Deserialize<List<Message>>(content.Result, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            return View(list);
+        }
+
+        public ActionResult Chat(string receptor)
+        {
             return View();
+        }
+
+        [HttpPost]
+        public ActionResult Chat(IFormCollection collection)
+        {
+            return View();
+        }
+
+        public ActionResult OpenChat(string id)
+        {
+            return RedirectToAction("Chat");
         }
 
         // GET: ChatController/Details/5

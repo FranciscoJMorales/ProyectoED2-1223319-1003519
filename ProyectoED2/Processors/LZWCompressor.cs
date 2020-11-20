@@ -109,11 +109,8 @@ namespace Processors
             return aux;
         }
 
-        public string Decompress(string text)
+        public string ShowDecompress(string text)
         {
-            int titleLength = Convert.ToInt32(text[0]);
-            string title = text.Substring(1, titleLength);
-            text = text.Remove(0, titleLength + 1);
             var size = Convert.ToInt32(text[0]);
             var letters = Convert.ToInt32(text[1]);
             text = text.Remove(0, 2);
@@ -141,6 +138,15 @@ namespace Processors
                     list[list.Count - 1] += list[lzw[i - 1]].Substring(0, 1);
                 final += list[lzw[i]];
             }
+            return final;
+        }
+
+        public string Decompress(string text)
+        {
+            int titleLength = Convert.ToInt32(text[0]);
+            string title = text.Substring(1, titleLength);
+            text = text.Remove(0, titleLength + 1);
+            string final = ShowDecompress(text);
             string path = Path + "\\" + title;
             using var file = new FileStream(path, FileMode.Create);
             file.Write(ConvertToByteArray(final), 0, final.Length);

@@ -20,7 +20,7 @@ namespace api
             var collection = database.GetCollection<BsonDocument>("Users");
             var document = new BsonDocument
             {
-                { Guid.NewGuid().ToString(), BsonValue.Create(user) }
+                { user.ID, BsonValue.Create(user) }
             };
             collection.InsertOne(document);
         }
@@ -56,6 +56,18 @@ namespace api
             foreach (var item in documents)
                 list.Add(JsonSerializer.Deserialize<Message>(item.ToJson(), new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
             return list;
+        }
+
+        public static List<Message> Chat(string user1, string user2)
+        {
+            var list = Messages();
+            var chat = new List<Message>();
+            foreach (var item in list)
+            {
+                if (item.IsFromChat(user1, user2))
+                    chat.Add(item);
+            }
+            return chat;
         }
     }
 }

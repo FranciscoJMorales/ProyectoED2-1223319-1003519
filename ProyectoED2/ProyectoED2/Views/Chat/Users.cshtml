@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Models.UserView>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h1>Iniciar conversacion</h1>
+<p>Elige a un usuario para chatear</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.ActionLink("Chatear", "OpenChat", new { id = item.ID })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

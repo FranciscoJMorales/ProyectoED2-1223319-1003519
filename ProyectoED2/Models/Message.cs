@@ -23,5 +23,13 @@ namespace Models
             Content = m;
             Time = DateTime.Now;
         }
+
+        public bool IsFromChat(string user1, string user2)
+        {
+            if (Sender == user1 && Receiver == user2)
+                return true;
+            else
+                return Sender == user2 && Receiver == user1;
+        }
     }
 }

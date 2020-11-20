@@ -95,7 +95,7 @@ namespace Processors
             return ShowCipher(password, "PQZUDIWMATCYKLEROSFJV");
         }
 
-        public string DechipherPassword(string password)
+        public string DecipherPassword(string password)
         {
             return ShowDecipher(password, "PQZUDIWMATCYKLEROSFJV");
         }
@@ -131,10 +131,7 @@ namespace Processors
             {
                 for (int i = 97; i < 123; i++)
                     alphabet.Add(Convert.ToChar(i));
-
             }
-
-
             return alphabet;
         }
 
@@ -146,26 +143,19 @@ namespace Processors
                 foreach (var item in key)
                     if (!alphabet.Contains(item))
                         alphabet.Add(item);
-
                 for (int i = 65; i < 91; i++)
                     if (!alphabet.Contains(Convert.ToChar(i)))
                         alphabet.Add(Convert.ToChar(i));
             }
             else
             {
-
                 foreach (var item in key)
                     if (!alphabet.Contains(item))
                         alphabet.Add(item);
-
                 for (int i = 97; i < 123; i++)
                     if (!alphabet.Contains(Convert.ToChar(i)))
                         alphabet.Add(Convert.ToChar(i));
             }
-
-
-
-
             return alphabet;
         }
 

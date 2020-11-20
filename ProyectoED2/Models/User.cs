@@ -5,6 +5,7 @@ namespace Models
 {
     public class User
     {
+        public string ID { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
         public int Key { get; set; }
@@ -16,6 +17,7 @@ namespace Models
 
         public User(string name, string password)
         {
+            ID = Guid.NewGuid().ToString();
             Name = name;
             var cesar = new CesarEncryptor("");
             Password = cesar.CipherPassword(password);
