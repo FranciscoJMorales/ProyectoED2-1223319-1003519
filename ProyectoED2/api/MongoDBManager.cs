@@ -14,15 +14,21 @@ namespace api
     {
         static readonly MongoClient Client = new MongoClient("mongodb+srv://FranciscoJMorales:ProyectoED2@projectediicluster.uuw4c.mongodb.net/ChatDB?retryWrites=true&w=majority");
 
-        public static void AddUser(User user)
+        public static bool AddUser(User user)
         {
-            var database = Client.GetDatabase("ChatDB");
-            var collection = database.GetCollection<BsonDocument>("Users");
-            var document = new BsonDocument
+            if (FindUser(user.Name, user.Password) == null)
             {
-                { user.ID, BsonValue.Create(user) }
-            };
-            collection.InsertOne(document);
+                var database = Client.GetDatabase("ChatDB");
+                var collection = database.GetCollection<BsonDocument>("Users");
+                var document = new BsonDocument
+                {
+                    { user.ID, BsonValue.Create(user) }
+                };
+                collection.InsertOne(document);
+                return true;
+            }
+            else
+                return false;
         }
 
         public static List<User> Users()
@@ -33,7 +39,30 @@ namespace api
             var list = new List<User>();
             foreach (var item in documents)
                 list.Add(JsonSerializer.Deserialize<User>(item.ToJson(), new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+            list.Sort();
             return list;
+        }
+
+        public static User FindUser(string name, string password)
+        {
+            var list = Users();
+            foreach (var item in list)
+            {
+                if (item.Name == name && item.Password == password)
+                    return item;
+            }
+            return null;
+        }
+
+        public static User FindUser(string id)
+        {
+            var list = Users();
+            foreach (var item in list)
+            {
+                if (item.ID == id)
+                    return item;
+            }
+            return null;
         }
 
         public static void AddMessage(Message message)
@@ -67,6 +96,10 @@ namespace api
                 if (item.IsFromChat(id1, id2))
                     chat.Add(item);
             }
+            var user1 = FindUser(id1);
+            var user2 = FindUser(id2);
+            foreach (var item in chat)
+                item.Decipher(user1.Key, user2.Key);
             return chat;
         }
 
@@ -74,10 +107,29 @@ namespace api
         {
             var list = Chat(id1, id2);
             var chat = new List<MessageView>();
-            foreach (var item in list) {
+            foreach (var item in list)
                 chat.Add(new MessageView(item, id1));
-            }
+            chat.Sort();
             return chat;
+        }
+
+        public static List<MessageView> Search(string id1, string id2, string text)
+        {
+            var results = new List<MessageView>();
+            if (text != null)
+            {
+                if (text.Length > 0)
+                {
+                    var list = ChatView(id1, id2);
+                    foreach (var item in list)
+                    {
+                        if (item.Mensaje.Contains(text))
+                            results.Add(item);
+                    }
+                }
+            }
+            results.Sort();
+            return results;
         }
     }
 }

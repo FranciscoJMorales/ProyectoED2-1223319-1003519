@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
+using Processors;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
@@ -20,34 +22,62 @@ namespace api.Controllers
         [Route("/login")]
         public IActionResult LogIn(User user)
         {
-            return Ok();
+            user = MongoDBManager.FindUser(user.Name, user.Password);
+            if (user != null)
+                return Ok(user);
+            else
+                return NotFound();
         }
 
         [HttpPost]
         [Route("/signin")]
         public IActionResult SignIn(User user)
         {
-            return Ok();
+            if (MongoDBManager.AddUser(user))
+                return StatusCode(201);
+            else
+                return Conflict();
         }
 
         [HttpGet]
         [Route("/users")]
         public IActionResult Users()
         {
-            return Ok();
+            try
+            {
+                var list = MongoDBManager.Users();
+                string json = JsonSerializer.Serialize<List<User>>(list);
+                var lzw = new LZWCompressor();
+                return Ok(lzw.ShowCompress(json));
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpGet]
         [Route("/chat/{IdEmisor}/{IdReceptor}")]
         public IActionResult Chat(string IdEmisor, string IdReceptor)
         {
-            return Ok();
+            try
+            {
+                var list = MongoDBManager.ChatView(IdEmisor, IdReceptor);
+                string json = JsonSerializer.Serialize<List<MessageView>>(list);
+                var lzw = new LZWCompressor();
+                return Ok(lzw.ShowCompress(json));
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpPost]
         [Route("/message")]
         public IActionResult Message(Message message)
         {
+            MongoDBManager.AddMessage(message);
             return Ok();
         }
 
@@ -55,14 +85,28 @@ namespace api.Controllers
         [Route("/search/{IdEmisor}/{IdReceptor}/{text}")]
         public IActionResult Search(string IdEmisor, string IdReceptor, string text)
         {
-            return Ok();
+            try
+            {
+                var list = MongoDBManager.Search(IdEmisor, IdReceptor, text);
+                string json = JsonSerializer.Serialize<List<MessageView>>(list);
+                var lzw = new LZWCompressor();
+                return Ok(lzw.ShowCompress(json));
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpGet]
         [Route("/user/{id}")]
         public IActionResult GetUser(string id)
         {
-            return Ok();
+            var user = MongoDBManager.FindUser(id);
+            if (user != null)
+                return Ok(user);
+            else
+                return NotFound();
         }
     }
 }

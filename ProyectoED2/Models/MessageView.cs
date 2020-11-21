@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Models
 {
-    public class MessageView
+    public class MessageView : IComparable
     {
         public string Usuario { get; set; }
         public string Fecha { get; set; }
@@ -18,6 +18,18 @@ namespace Models
                 Usuario = m.Sender;
             Fecha = m.Time;
             Mensaje = m.Content;
+        }
+
+        public int CompareTo(object obj)
+        {
+            try
+            {
+                return Fecha.CompareTo(((MessageView)obj).Fecha);
+            }
+            catch
+            {
+                return 1;
+            }
         }
     }
 }

@@ -7,9 +7,9 @@
 <h1>@ViewBag.Receptor</h1>
 <hr />
 @using (Html.BeginForm("Search",
-                    "Chat",
-                    FormMethod.Post,
-                    new { enctype = "multipart/form-data" }))
+                   "Chat",
+                   FormMethod.Post,
+                   new { enctype = "multipart/form-data" }))
 {
     <p>Buscar mensajes</p>
     <input type="text" class="form-control" name="text" placeholder="Escribe la palabra clave" />
@@ -49,12 +49,14 @@
     </tbody>
 </table>
 @using (Html.BeginForm("Chat",
-                    "Chat",
-                    FormMethod.Post,
-                    new { enctype = "multipart/form-data" }))
+                   "Chat",
+                   FormMethod.Post,
+                   new { enctype = "multipart/form-data" }))
 {
-    <input type="text" class="form-control" name="message" placeholder="Escribe un mensaje:" />
-    <button type="submit">Enviar</button>
+    <input type="text" class="form-control" name="message" placeholder="Escribe un mensaje:" /> <button type="submit">Enviar</button>
 }
+<hr />
+<input type="button" value="Refrescar" onclick="location.href='@Url.Action("Chat", "Chat")'" />
+<hr />
 @Html.ActionLink("Volver a la pagina principal", "Users", "Chat")
 

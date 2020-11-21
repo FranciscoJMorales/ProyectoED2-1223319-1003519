@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Processors;
 
 namespace Models
 {
@@ -24,7 +25,7 @@ namespace Models
             SenderID = sender.ID;
             Receiver = receiver.ID;
             ReceiverID = receiver.ID;
-            Content = m;
+            Content = SDES.CipherMessage(m, sender.Key, receiver.Key);
             Time = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
         }
 
@@ -34,6 +35,11 @@ namespace Models
                 return true;
             else
                 return SenderID == id2 && ReceiverID == id1;
+        }
+
+        public void Decipher(int key1, int key2)
+        {
+            Content = SDES.DecipherMessage(Content, key1, key2);
         }
     }
 }

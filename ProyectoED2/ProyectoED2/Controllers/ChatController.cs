@@ -43,6 +43,8 @@ namespace ProyectoED2.Controllers
             var response = client.PostAsync("login", new StringContent(JsonSerializer.Serialize<User>(user), Encoding.UTF8, "application/json"));
             if (response.Result.IsSuccessStatusCode)
             {
+                var content = response.Result.Content.ReadAsStringAsync();
+                user = JsonSerializer.Deserialize<User>(content.Result, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
                 currentUser = user;
                 return RedirectToAction("Users");
             }
