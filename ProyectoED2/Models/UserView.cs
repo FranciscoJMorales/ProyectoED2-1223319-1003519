@@ -10,6 +10,11 @@ namespace Models
         public string ID { get; set; }
         public string Nombre { get; set; }
 
+        public UserView()
+        {
+
+        }
+
         public UserView(User user)
         {
             ID = user.ID;

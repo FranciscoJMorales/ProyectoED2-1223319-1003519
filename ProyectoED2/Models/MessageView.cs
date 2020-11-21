@@ -10,6 +10,11 @@ namespace Models
         public string Fecha { get; set; }
         public string Mensaje { get; set; }
 
+        public MessageView()
+        {
+
+        }
+
         public MessageView(Message m, string id)
         {
             if (id == m.SenderID)

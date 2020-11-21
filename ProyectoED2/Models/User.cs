@@ -1,10 +1,12 @@
 ﻿using System;
+using MongoDB.Bson.Serialization.Attributes;
 using Processors;
 
 namespace Models
 {
     public class User
     {
+        [BsonId]
         public string ID { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }

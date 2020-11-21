@@ -45,8 +45,8 @@ namespace api.Controllers
         {
             try
             {
-                var list = MongoDBManager.Users();
-                string json = JsonSerializer.Serialize<List<User>>(list);
+                var list = MongoDBManager.UserViews();
+                string json = JsonSerializer.Serialize(list);
                 var lzw = new LZWCompressor();
                 return Ok(lzw.ShowCompress(json));
             }
@@ -63,7 +63,7 @@ namespace api.Controllers
             try
             {
                 var list = MongoDBManager.ChatView(IdEmisor, IdReceptor);
-                string json = JsonSerializer.Serialize<List<MessageView>>(list);
+                string json = JsonSerializer.Serialize(list);
                 var lzw = new LZWCompressor();
                 return Ok(lzw.ShowCompress(json));
             }
@@ -88,7 +88,7 @@ namespace api.Controllers
             try
             {
                 var list = MongoDBManager.Search(IdEmisor, IdReceptor, text);
-                string json = JsonSerializer.Serialize<List<MessageView>>(list);
+                string json = JsonSerializer.Serialize(list);
                 var lzw = new LZWCompressor();
                 return Ok(lzw.ShowCompress(json));
             }

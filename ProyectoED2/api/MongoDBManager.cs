@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.IO;
 
 namespace api
 {
@@ -20,10 +22,11 @@ namespace api
             {
                 var database = Client.GetDatabase("ChatDB");
                 var collection = database.GetCollection<BsonDocument>("Users");
-                var document = new BsonDocument
+                BsonDocument document = new BsonDocument();
+                using (var writer = new BsonDocumentWriter(document))
                 {
-                    { user.ID, BsonValue.Create(user) }
-                };
+                    BsonSerializer.Serialize(writer, typeof(User), user);
+                }
                 collection.InsertOne(document);
                 return true;
             }
@@ -38,9 +41,18 @@ namespace api
             var documents = collection.Find(new BsonDocument()).ToList();
             var list = new List<User>();
             foreach (var item in documents)
-                list.Add(JsonSerializer.Deserialize<User>(item.ToJson(), new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+                list.Add(BsonSerializer.Deserialize<User>(item));
             list.Sort();
             return list;
+        }
+
+        public static List<UserView> UserViews()
+        {
+            var list = Users();
+            var users = new List<UserView>();
+            foreach (var item in list)
+                users.Add(new UserView(item));
+            return users;
         }
 
         public static User FindUser(string name, string password)
@@ -69,10 +81,11 @@ namespace api
         {
             var database = Client.GetDatabase("ChatDB");
             var collection = database.GetCollection<BsonDocument>("Messages");
-            var document = new BsonDocument
+            BsonDocument document = new BsonDocument();
+            using (var writer = new BsonDocumentWriter(document))
             {
-                { Guid.NewGuid().ToString(), BsonValue.Create(message) }
-            };
+                BsonSerializer.Serialize(writer, typeof(Message), message);
+            }
             collection.InsertOne(document);
         }
 
@@ -83,7 +96,7 @@ namespace api
             var documents = collection.Find(new BsonDocument()).ToList();
             var list = new List<Message>();
             foreach (var item in documents)
-                list.Add(JsonSerializer.Deserialize<Message>(item.ToJson(), new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+                list.Add(BsonSerializer.Deserialize<Message>(item));
             return list;
         }
 

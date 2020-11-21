@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using MongoDB.Bson.Serialization.Attributes;
 using Processors;
 
 namespace Models
 {
     public class Message
     {
+        [BsonId]
+        public string ID { get; set; }
         public string Sender { get; set; }
         public string Receiver { get; set; }
         public string SenderID { get; set; }
@@ -21,6 +24,7 @@ namespace Models
 
         public Message(User sender, User receiver, string m)
         {
+            ID = Guid.NewGuid().ToString();
             Sender = sender.Name;
             SenderID = sender.ID;
             Receiver = receiver.ID;
