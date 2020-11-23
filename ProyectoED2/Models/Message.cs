@@ -6,7 +6,7 @@ using Processors;
 
 namespace Models
 {
-    public class Message
+    public class Message : IComparable
     {
         [BsonId]
         public string ID { get; set; }
@@ -44,6 +44,18 @@ namespace Models
         public void Decipher(int key1, int key2)
         {
             Content = SDES.DecipherMessage(Content, key1, key2);
+        }
+
+        public int CompareTo(object obj)
+        {
+            try
+            {
+                return Time.CompareTo(((Message)obj).Time);
+            }
+            catch
+            {
+                return 1;
+            }
         }
     }
 }

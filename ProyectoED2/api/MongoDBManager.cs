@@ -38,7 +38,8 @@ namespace api
         {
             var database = Client.GetDatabase("ChatDB");
             var collection = database.GetCollection<BsonDocument>("Users");
-            var documents = collection.Find(new BsonDocument()).ToList();
+            //var documents = collection.Find(new BsonDocument()).ToList();
+            var documents = collection.AsQueryable().ToList();
             var list = new List<User>();
             foreach (var item in documents)
                 list.Add(BsonSerializer.Deserialize<User>(item));
@@ -93,7 +94,8 @@ namespace api
         {
             var database = Client.GetDatabase("ChatDB");
             var collection = database.GetCollection<BsonDocument>("Messages");
-            var documents = collection.Find(new BsonDocument()).ToList();
+            //var documents = collection.Find(new BsonDocument()).ToList();
+            var documents = collection.AsQueryable().ToList();
             var list = new List<Message>();
             foreach (var item in documents)
                 list.Add(BsonSerializer.Deserialize<Message>(item));

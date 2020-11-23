@@ -4,7 +4,7 @@ using Processors;
 
 namespace Models
 {
-    public class User
+    public class User : IComparable
     {
         [BsonId]
         public string ID { get; set; }
@@ -25,6 +25,22 @@ namespace Models
             Password = cesar.CipherPassword(password);
             Random rng = new Random();
             Key = rng.Next(0, 1021);
+        }
+
+        public int CompareTo(object obj)
+        {
+            try
+            {
+                User other = (User)obj;
+                if (Name.CompareTo(other.Name) == 0)
+                    return ID.CompareTo(other.ID);
+                else
+                    return Name.CompareTo(other.Name);
+            }
+            catch
+            {
+                return 1;
+            }
         }
     }
 }

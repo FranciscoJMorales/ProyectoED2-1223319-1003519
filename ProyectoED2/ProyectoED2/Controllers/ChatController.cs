@@ -44,7 +44,7 @@ namespace ProyectoED2.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                user = JsonSerializer.Deserialize<User>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                user = JsonSerializer.Deserialize<User>(content);
                 currentUser = user;
                 return RedirectToAction("Users");
             }
@@ -92,8 +92,13 @@ namespace ProyectoED2.Controllers
                 var text = await response.Content.ReadAsStringAsync();
                 var lzw = new LZWCompressor();
                 string content = lzw.ShowDecompress(text);
-                var list = JsonSerializer.Deserialize<List<UserView>>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-                list.Remove(new UserView(currentUser));
+                var list = JsonSerializer.Deserialize<List<UserView>>(content);
+                var user = new UserView(currentUser);
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (list[i].CompareTo(user) == 0)
+                        list.RemoveAt(i);
+                }
                 return View(list);
             }
             else
@@ -108,7 +113,7 @@ namespace ProyectoED2.Controllers
                 var text = await response.Content.ReadAsStringAsync();
                 var lzw = new LZWCompressor();
                 string content = lzw.ShowDecompress(text);
-                var list = JsonSerializer.Deserialize<List<MessageView>>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                var list = JsonSerializer.Deserialize<List<MessageView>>(content);
                 return View(list);
             }
             else
@@ -139,7 +144,7 @@ namespace ProyectoED2.Controllers
                 var text = await response.Content.ReadAsStringAsync();
                 var lzw = new LZWCompressor();
                 string content = lzw.ShowDecompress(text);
-                var list = JsonSerializer.Deserialize<List<MessageView>>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                var list = JsonSerializer.Deserialize<List<MessageView>>(content);
                 ViewBag.Word = collection["text"];
                 ViewBag.Results = list.Count;
                 return View(list);
@@ -154,7 +159,7 @@ namespace ProyectoED2.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var user = JsonSerializer.Deserialize<User>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                var user = JsonSerializer.Deserialize<User>(content);
                 currentChat = user;
                 return RedirectToAction("Chat");
             }
