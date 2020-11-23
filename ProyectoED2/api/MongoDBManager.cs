@@ -14,32 +14,38 @@ namespace api
 {
     public static class MongoDBManager
     {
-        static readonly MongoClient Client = new MongoClient("mongodb+srv://FranciscoJMorales:ProyectoED2@projectediicluster.uuw4c.mongodb.net/ChatDB?retryWrites=true&w=majority");
+        private static readonly MongoClient Client;
+        private static readonly IMongoDatabase DataBase;
+        private static readonly IMongoCollection<BsonDocument> Users;
+        private static readonly IMongoCollection<BsonDocument> Messages;
+
+        static MongoDBManager()
+        {
+            Client = new MongoClient("mongodb+srv://FranciscoJMorales:ProyectoED2@projectediicluster.uuw4c.mongodb.net/ChatDB?retryWrites=true&w=majority");
+            DataBase = Client.GetDatabase("ChatDB");
+            Users = DataBase.GetCollection<BsonDocument>("Users");
+            Messages = DataBase.GetCollection<BsonDocument>("Messages");
+        }
 
         public static bool AddUser(User user)
         {
             if (FindUser(user.Name, user.Password) == null)
             {
-                var database = Client.GetDatabase("ChatDB");
-                var collection = database.GetCollection<BsonDocument>("Users");
                 BsonDocument document = new BsonDocument();
                 using (var writer = new BsonDocumentWriter(document))
                 {
                     BsonSerializer.Serialize(writer, typeof(User), user);
                 }
-                collection.InsertOne(document);
+                Users.InsertOne(document);
                 return true;
             }
             else
                 return false;
         }
 
-        public static List<User> Users()
+        public static List<User> GetUsers()
         {
-            var database = Client.GetDatabase("ChatDB");
-            var collection = database.GetCollection<BsonDocument>("Users");
-            //var documents = collection.Find(new BsonDocument()).ToList();
-            var documents = collection.AsQueryable().ToList();
+            var documents = Users.AsQueryable().ToList();
             var list = new List<User>();
             foreach (var item in documents)
                 list.Add(BsonSerializer.Deserialize<User>(item));
@@ -49,7 +55,7 @@ namespace api
 
         public static List<UserView> UserViews()
         {
-            var list = Users();
+            var list = GetUsers();
             var users = new List<UserView>();
             foreach (var item in list)
                 users.Add(new UserView(item));
@@ -58,7 +64,7 @@ namespace api
 
         public static User FindUser(string name, string password)
         {
-            var list = Users();
+            var list = GetUsers();
             foreach (var item in list)
             {
                 if (item.Name == name && item.Password == password)
@@ -69,7 +75,7 @@ namespace api
 
         public static User FindUser(string id)
         {
-            var list = Users();
+            var list = GetUsers();
             foreach (var item in list)
             {
                 if (item.ID == id)
@@ -80,22 +86,17 @@ namespace api
 
         public static void AddMessage(Message message)
         {
-            var database = Client.GetDatabase("ChatDB");
-            var collection = database.GetCollection<BsonDocument>("Messages");
             BsonDocument document = new BsonDocument();
             using (var writer = new BsonDocumentWriter(document))
             {
                 BsonSerializer.Serialize(writer, typeof(Message), message);
             }
-            collection.InsertOne(document);
+            Messages.InsertOne(document);
         }
 
-        public static List<Message> Messages()
+        public static List<Message> GetMessages()
         {
-            var database = Client.GetDatabase("ChatDB");
-            var collection = database.GetCollection<BsonDocument>("Messages");
-            //var documents = collection.Find(new BsonDocument()).ToList();
-            var documents = collection.AsQueryable().ToList();
+            var documents = Messages.AsQueryable().ToList();
             var list = new List<Message>();
             foreach (var item in documents)
                 list.Add(BsonSerializer.Deserialize<Message>(item));
@@ -104,7 +105,7 @@ namespace api
 
         public static List<Message> Chat(string id1, string id2)
         {
-            var list = Messages();
+            var list = GetMessages();
             var chat = new List<Message>();
             foreach (var item in list)
             {

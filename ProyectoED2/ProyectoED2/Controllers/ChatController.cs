@@ -44,7 +44,7 @@ namespace ProyectoED2.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                user = JsonSerializer.Deserialize<User>(content);
+                user = JsonSerializer.Deserialize<User>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
                 currentUser = user;
                 return RedirectToAction("Users");
             }
@@ -159,7 +159,7 @@ namespace ProyectoED2.Controllers
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var user = JsonSerializer.Deserialize<User>(content);
+                var user = JsonSerializer.Deserialize<User>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
                 currentChat = user;
                 return RedirectToAction("Chat");
             }
