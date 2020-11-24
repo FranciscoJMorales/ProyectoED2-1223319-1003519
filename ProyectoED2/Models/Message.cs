@@ -41,9 +41,9 @@ namespace Models
                 return SenderID == id2 && ReceiverID == id1;
         }
 
-        public void Decipher(int key1, int key2)
+        public void Decipher(int key)
         {
-            Content = SDES.DecipherMessage(Content, key1, key2);
+            Content = SDES.Decipher(Content, key);
         }
 
         public int CompareTo(object obj)

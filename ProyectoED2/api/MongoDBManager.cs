@@ -9,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.IO;
+using Processors;
 
 namespace api
 {
@@ -114,8 +115,9 @@ namespace api
             }
             var user1 = FindUser(id1);
             var user2 = FindUser(id2);
+            int key = DiffieHellman.GenerateKey(user1.Key, user2.Key);
             foreach (var item in chat)
-                item.Decipher(user1.Key, user2.Key);
+                item.Decipher(key);
             return chat;
         }
 
