@@ -10,8 +10,9 @@ namespace TestSdes
             Console.WriteLine("Hello World!");
 
             SDES cifrado = new SDES();
-
-            cifrado.CipherMessage("LL",1,2);
+            
+           Console.WriteLine(cifrado.DecipherMessage(cifrado.CipherMessage("H", 2, 4), 2,4));
+            
         }
     }
 }
