@@ -4,10 +4,10 @@ using System.Text;
 
 namespace Processors
 {
-    // agregar el static
-    public  class SDES
+    
+    public static class SDES
     {
-        //pasarlo a privado
+        
         public static string Cipher(string text, int key)
         {
             var keys = GenerateKeys(key);
@@ -104,19 +104,19 @@ namespace Processors
             throw new NotImplementedException();
         }
 
-        // agregaqrt el static3
-        public  string CipherMessage(string message, int key1, int key2)
+        
+        public static string CipherMessage(string message, int key1, int key2)
         {
             return Cipher(message, DiffieHellman.GenerateKey(key1, key2));
-            //return Cipher(message, 857);
+           
         }
 
-        //static
-        public  string DecipherMessage(string message, int key1, int key2)
+       
+        public static string DecipherMessage(string message, int key1, int key2)
         {
             
             return Decipher(message, DiffieHellman.GenerateKey(key1, key2));
-           // return Decipher(message, 857);
+           
         }
 
       
@@ -133,9 +133,9 @@ namespace Processors
             return aux;
         }
 
-        private static long ConvertToInt(string binary)
+        private static int ConvertToInt(string binary)
         {
-            long value = 0;
+            int value = 0;
             while (binary.Length > 0)
             {
                 value *= 2;
@@ -173,21 +173,19 @@ namespace Processors
                                               { "10", "00", "01", "11" },
                                               { "11", "00", "01", "00" },
                                               { "10", "01", "00", "11" }};
-            string text = c1[0].ToString() + c1[3].ToString();
-
-            //int fila = Convert.ToInt32(text, 2);
-            long fila = ConvertToInt(text); 
-            text = c1[1].ToString() + c1[2].ToString();
-            //int columna = Convert.ToInt32(text, 2); 
-            long columna = ConvertToInt(text);
+            
+            string text = c1[0].ToString() + c1[3].ToString();           
+            int fila = ConvertToInt(text); 
+            text = c1[1].ToString() + c1[2].ToString();           
+            int columna = ConvertToInt(text);
             if (izq)
             {
                 text = s0[fila, columna];
-                //text = s0[ columna, fila];
+                
             }
             else {
                 text = s1[fila, columna];
-               // text = s1[columna, fila];
+               
             }
             return text;
         }
