@@ -40,8 +40,6 @@ namespace ProyectoED2.Controllers
         [HttpPost]
         public async Task<ActionResult> Index(IFormCollection collection)
         {
-            string currentUser = HttpContext.Session.GetString("currentUser");
-            string currentChat = HttpContext.Session.GetString("currentChat");
             User user = new User(collection["name"], collection["password"]);
             var response = await client.PostAsync("login", new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json"));
             if (response.IsSuccessStatusCode)
