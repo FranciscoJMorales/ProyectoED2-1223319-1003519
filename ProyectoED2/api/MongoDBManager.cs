@@ -46,7 +46,7 @@ namespace api
 
         public static List<User> GetUsers()
         {
-            var documents = Users.AsQueryable().ToList();
+            var documents = Users.Find(new BsonDocument()).ToList();
             var list = new List<User>();
             foreach (var item in documents)
                 list.Add(BsonSerializer.Deserialize<User>(item));
@@ -97,7 +97,7 @@ namespace api
 
         public static List<Message> GetMessages()
         {
-            var documents = Messages.AsQueryable().ToList();
+            var documents = Messages.Find(new BsonDocument()).ToList();
             var list = new List<Message>();
             foreach (var item in documents)
                 list.Add(BsonSerializer.Deserialize<Message>(item));
@@ -115,9 +115,12 @@ namespace api
             }
             var user1 = FindUser(id1);
             var user2 = FindUser(id2);
-            int key = DiffieHellman.GenerateKey(user1.Key, user2.Key);
-            foreach (var item in chat)
-                item.Decipher(key);
+            if (chat.Count > 0)
+            {
+                int key = DiffieHellman.GenerateKey(user1.Key, user2.Key);
+                foreach (var item in chat)
+                    item.Decipher(key);
+            }
             return chat;
         }
 
