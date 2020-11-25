@@ -67,7 +67,6 @@ namespace ProyectoED2.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     HttpContext.Session.SetString("currentUser", user.ID);
-                    //currentUser = user;
                     return RedirectToAction("Users");
                 }
                 else
