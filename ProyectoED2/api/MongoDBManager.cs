@@ -144,7 +144,7 @@ namespace api
                     var list = ChatView(id1, id2);
                     foreach (var item in list)
                     {
-                        if (item.Mensaje.Contains(text))
+                        if (item.Mensaje.ToLower().Contains(text.ToLower()))
                             results.Add(item);
                     }
                 }

@@ -18,8 +18,6 @@ namespace ProyectoED2.Controllers
     public class ChatController : Controller
     {
         private static readonly HttpClient client;
-        //private static User currentUser;
-        //private static User currentChat;
 
         static ChatController()
         {
