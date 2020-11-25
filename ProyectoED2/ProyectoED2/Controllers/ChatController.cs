@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,8 +18,8 @@ namespace ProyectoED2.Controllers
     public class ChatController : Controller
     {
         private static readonly HttpClient client;
-        private static User currentUser;
-        private static User currentChat;
+        //private static User currentUser;
+        //private static User currentChat;
 
         static ChatController()
         {
@@ -31,21 +32,23 @@ namespace ProyectoED2.Controllers
         // GET: ChatController
         public ActionResult Index()
         {
-            currentUser = null;
-            currentChat = null;
+            HttpContext.Session.SetString("currentUser", "");
+            HttpContext.Session.SetString("currentChat", "");
             return View();
         }
 
         [HttpPost]
         public async Task<ActionResult> Index(IFormCollection collection)
         {
+            string currentUser = HttpContext.Session.GetString("currentUser");
+            string currentChat = HttpContext.Session.GetString("currentChat");
             User user = new User(collection["name"], collection["password"]);
             var response = await client.PostAsync("login", new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json"));
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
                 user = JsonSerializer.Deserialize<User>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-                currentUser = user;
+                HttpContext.Session.SetString("currentUser", user.ID);
                 return RedirectToAction("Users");
             }
             else
@@ -67,7 +70,8 @@ namespace ProyectoED2.Controllers
                 var response = await client.PostAsync("signin", new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json"));
                 if (response.IsSuccessStatusCode)
                 {
-                    currentUser = user;
+                    HttpContext.Session.SetString("currentUser", user.ID);
+                    //currentUser = user;
                     return RedirectToAction("Users");
                 }
                 else
@@ -85,7 +89,7 @@ namespace ProyectoED2.Controllers
 
         public async Task<ActionResult> Users()
         {
-            currentChat = null;
+            HttpContext.Session.SetString("currentChat", "");
             var response = await client.GetAsync("users");
             if (response.IsSuccessStatusCode)
             {
@@ -93,10 +97,10 @@ namespace ProyectoED2.Controllers
                 var lzw = new LZWCompressor();
                 string content = lzw.ShowDecompress(text);
                 var list = JsonSerializer.Deserialize<List<UserView>>(content);
-                var user = new UserView(currentUser);
+                var user = HttpContext.Session.GetString("currentUser");
                 for (int i = 0; i < list.Count; i++)
                 {
-                    if (list[i].CompareTo(user) == 0)
+                    if (list[i].ID.CompareTo(user) == 0)
                         list.RemoveAt(i);
                 }
                 return View(list);
@@ -107,7 +111,7 @@ namespace ProyectoED2.Controllers
 
         public async Task<ActionResult> Chat()
         {
-            var response = await client.GetAsync($"chat/{currentUser.ID}/{currentChat.ID}");
+            var response = await client.GetAsync($"chat/{HttpContext.Session.GetString("currentUser")}/{HttpContext.Session.GetString("currentChat")}");
             if (response.IsSuccessStatusCode)
             {
                 var text = await response.Content.ReadAsStringAsync();
@@ -123,9 +127,32 @@ namespace ProyectoED2.Controllers
         [HttpPost]
         public async Task<ActionResult> Chat(IFormCollection collection)
         {
-            var message = new Message(currentUser, currentChat, collection["message"]);
-            await client.PostAsync("message", new StringContent(JsonSerializer.Serialize(message), Encoding.UTF8, "application/json"));
-            return RedirectToAction("Chat");
+            try
+            {
+                var response = await client.GetAsync($"user/{HttpContext.Session.GetString("currentUser")}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    var currentUser = JsonSerializer.Deserialize<User>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                    response = await client.GetAsync($"user/{HttpContext.Session.GetString("currentUser")}");
+                    if (response.IsSuccessStatusCode)
+                    {
+                        content = await response.Content.ReadAsStringAsync();
+                        var currentChat = JsonSerializer.Deserialize<User>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                        var message = new Message(currentUser, currentChat, collection["message"]);
+                        await client.PostAsync("message", new StringContent(JsonSerializer.Serialize(message), Encoding.UTF8, "application/json"));
+                        return RedirectToAction("Chat");
+                    }
+                    else
+                        return RedirectToAction("Chat");
+                }
+                else
+                    return RedirectToAction("Chat");
+            }
+            catch
+            {
+                return RedirectToAction("Chat");
+            }
         }
 
         public ActionResult Search()
@@ -138,7 +165,7 @@ namespace ProyectoED2.Controllers
         [HttpPost]
         public async Task<ActionResult> Search(IFormCollection collection)
         {
-            var response = await client.GetAsync($"search/{currentUser.ID}/{currentChat.ID}/{collection["text"]}");
+            var response = await client.GetAsync($"search/{HttpContext.Session.GetString("currentUser")}/{HttpContext.Session.GetString("currentChat")}/{collection["text"]}");
             if (response.IsSuccessStatusCode)
             {
                 var text = await response.Content.ReadAsStringAsync();
@@ -160,7 +187,7 @@ namespace ProyectoED2.Controllers
             {
                 var content = await response.Content.ReadAsStringAsync();
                 var user = JsonSerializer.Deserialize<User>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-                currentChat = user;
+                HttpContext.Session.SetString("currentChat", user.ID);
                 return RedirectToAction("Chat");
             }
             else
