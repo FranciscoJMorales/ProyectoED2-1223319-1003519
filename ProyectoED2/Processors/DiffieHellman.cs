@@ -1,51 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Text;
 
 namespace Processors
 {
     public static class DiffieHellman
     {
-        /*
         public static int GenerateKey(int key1, int key2)
         {
-            throw new NotImplementedException();
-        }
-        */
-
-        public static int GenerateKey(int key1, int key2)
-        {
-
-            return int.Parse(Key(key1, IndividualKey(key2)));
-            throw new NotImplementedException();
-        }
-
-        private static BigInteger IndividualKey(int key)
-        {
-
-            BigInteger A = 1;
-
-            for (int i = 1; i <= key; i++)
+            int aux = 137;
+            for (int i = 1; i < key1; i++)
             {
-                A *= 171;
+                aux *= 137;
+                aux %= 1021;
             }
-            return A % 1021;
-            throw new NotImplementedException();
-        }
-
-        private static string Key(int privkey, BigInteger pubkey)
-        {
-
-            BigInteger K = 1;
-
-            for (int i = 1; i <= privkey; i++)
+            int key = aux;
+            for (int i = 1; i < key2; i++)
             {
-                K *= pubkey;
+                key *= aux;
+                key %= 1021;
             }
-
-            return (K % 1021).ToString();
-            throw new NotImplementedException();
+            return key;
         }
     }
 }
