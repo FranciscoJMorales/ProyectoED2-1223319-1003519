@@ -129,7 +129,7 @@ namespace ProyectoED2.Controllers
                 {
                     var content = await response.Content.ReadAsStringAsync();
                     var currentUser = JsonSerializer.Deserialize<User>(content, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-                    response = await client.GetAsync($"user/{HttpContext.Session.GetString("currentUser")}");
+                    response = await client.GetAsync($"user/{HttpContext.Session.GetString("currentChat")}");
                     if (response.IsSuccessStatusCode)
                     {
                         content = await response.Content.ReadAsStringAsync();

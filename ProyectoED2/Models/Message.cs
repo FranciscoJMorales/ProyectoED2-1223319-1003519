@@ -27,7 +27,7 @@ namespace Models
             ID = Guid.NewGuid().ToString();
             Sender = sender.Name;
             SenderID = sender.ID;
-            Receiver = receiver.ID;
+            Receiver = receiver.Name;
             ReceiverID = receiver.ID;
             Content = SDES.CipherMessage(m, sender.Key, receiver.Key);
             Time = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
