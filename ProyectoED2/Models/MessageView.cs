@@ -18,7 +18,7 @@ namespace Models
         public MessageView(Message m, string id)
         {
             if (id == m.SenderID)
-                Usuario = "Tu";
+                Usuario = "Tú";
             else
                 Usuario = m.Sender;
             Fecha = m.Time;

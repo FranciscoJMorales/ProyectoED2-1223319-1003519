@@ -32,6 +32,7 @@ namespace ProyectoED2.Controllers
         {
             HttpContext.Session.SetString("currentUser", "");
             HttpContext.Session.SetString("currentChat", "");
+            ViewBag.Wrong = "";
             return View();
         }
 
@@ -48,7 +49,10 @@ namespace ProyectoED2.Controllers
                 return RedirectToAction("Users");
             }
             else
+            {
+                ViewBag.Wrong = "El usuario o la contraseña es incorrecta";
                 return View();
+            }
         }
 
         public ActionResult SignIn()

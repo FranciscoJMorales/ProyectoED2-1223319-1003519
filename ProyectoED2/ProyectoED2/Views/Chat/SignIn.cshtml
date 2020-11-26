@@ -5,7 +5,7 @@
     ViewBag.Title = "SignIn";
 }
 
-<h2>Registrate</h2>
+<h2>Regístrate</h2>
 <br />
 @using (Html.BeginForm("SignIn",
                            "Chat",
@@ -18,9 +18,9 @@
     <input type="password" class="form-control" name="password" placeholder="Contraseña" />
     <p>Confirmar contraseña: </p>
     <input type="password" class="form-control" name="password2" placeholder="Contraseña" />
-    <button type="submit">Registrate</button>
+    <button type="submit">Regístrate</button>
 }
 <p style="color:red">@ViewBag.IncorrectPassword</p>
 <hr />
 <p>¿Ya tienes una cuenta?</p>
-@Html.ActionLink("Inicia sesion", "Index", "Chat")
+@Html.ActionLink("Inicia sesión", "Index", "Chat")
